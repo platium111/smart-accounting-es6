@@ -1,0 +1,41 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "fullName": "tran quang hung",
+      "age": 22,
+      "cityId": "1"
+    },
+    {
+      "id": 2,
+      "fullName": "tong quang huy",
+      "age": 29,
+      "cityId": "1"
+    },
+    {
+      "id": 40,
+      "fullName": "tran quoc tuan",
+      "age": 22,
+      "cityId": "2"
+    },
+    {
+      "age": 24,
+      "id": 41
+    },
+    {
+      "fullName": "Tran quang Khai",
+      "age": 24,
+      "id": 42
+    }
+  ],
+  "cities": [
+    {
+      "id": 1,
+      "name": "Ha Noi"
+    },
+    {
+      "id": 2,
+      "name": "Thanh Hoa"
+    }
+  ]
+}
