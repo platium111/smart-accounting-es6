@@ -14,12 +14,27 @@ var _schema2 = _interopRequireDefault(_schema);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var mongoose = require("mongoose");
+
+var bodyParser = require("body-parser");
+
+
 var app = (0, _express2.default)();
 
 var MONGO_URI = "mongodb+srv://hieptq:hiepdaiceu@cluster0-qymdm.mongodb.net/test?retryWrites=true&w=majority";
 if (!MONGO_URI) {
   throw new Error("you don't provide MongoDB URI");
 }
+
+mongoose.Promise = global.Promise;
+mongoose.connect(MONGO_URI);
+mongoose.connection.once("open", function () {
+  return console.log("Connected to MongoLab instance.");
+}).on("error", function (error) {
+  return console.log("Error connecting to MongoLab:", error);
+});
+
+app.use(bodyParser.json());
 
 app.use("/graphql", (0, _expressGraphql2.default)({
   schema: _schema2.default,
