@@ -39,6 +39,7 @@ _mongoose2.default.connection.once("open", function () {
   return console.log("Error connecting to MongoLab:", error);
 });
 
+
 app.use(cors());
 app.use(_bodyParser2.default.json());
 

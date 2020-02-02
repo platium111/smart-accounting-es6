@@ -1,33 +1,23 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CustomerType = undefined;
+var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
 
-var _graphql = require("graphql");
-
-var _city = require("./city");
-
-/* 
-Customer has "city"
-Need API : cities/id. Id from customer which is "cityId"
-*/
-var CustomerType = exports.CustomerType = new _graphql.GraphQLObjectType({
-  name: "Customer",
-  fields: function fields() {
-    return {
-      id: { type: _graphql.GraphQLString },
-      fullName: { type: _graphql.GraphQLString },
-      age: { type: _graphql.GraphQLInt },
-      city: {
-        type: _city.CityType,
-        resolve: function resolve(parentValue, args) {
-          return axios.get("http://localhost:3000/cities/" + parentValue.cityId).then(function (response) {
-            return response.data;
-          });
-        }
-      }
-    };
+var CustomerSchema = new Schema({
+  fullName: { type: String },
+  age: { type: Number },
+  city: {
+    type: Schema.Types.ObjectId,
+    ref: "city"
   }
 });
+
+CustomerSchema.statics.findCity = function (id) {
+  return undefined.findById(id).populate("city", 'melbourne').then(function (customer) {
+    return customer.city;
+  }).catch(function (err) {
+    return console.log(err);
+  });
+};
+
+mongoose.model("customer", CustomerSchema);

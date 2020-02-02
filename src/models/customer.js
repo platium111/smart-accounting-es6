@@ -1,27 +1,20 @@
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLInt,
-  GraphQLSchema
-} from "graphql";
-import {CityType} from "./city";
-/* 
-Customer has "city"
-Need API : cities/id. Id from customer which is "cityId"
-*/
-export const CustomerType = new GraphQLObjectType({
-  name: "Customer",
-  fields: () => ({
-    id: { type: GraphQLString },
-    fullName: { type: GraphQLString },
-    age: { type: GraphQLInt },
-    city: {
-      type: CityType,
-      resolve(parentValue, args) {
-        return axios
-          .get(`http://localhost:3000/cities/${parentValue.cityId}`)
-          .then(response => response.data);
-      }
-    }
-  })
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const CustomerSchema = new Schema({
+  fullName: { type: String },
+  age: { type: Number },
+  city: {
+    type: Schema.Types.ObjectId,
+    ref: "city"
+  }
 });
+
+CustomerSchema.statics.findCity = id => {
+  return this.findById(id)
+    .populate("city", 'melbourne')
+    .then(customer => customer.city)
+    .catch(err => console.log(err));
+};
+
+mongoose.model("customer", CustomerSchema);

@@ -1,22 +1,33 @@
-import { GraphQLObjectType, GraphQLString, GraphQLList } from "graphql";
-import { CustomerType } from "./customer";
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-/* 
-City has many "customers". 
-Need to have API to get to cities/id/customers. Only Id from city
-*/
-export const CityType = new GraphQLObjectType({
-  name: "City",
-  fields: () => ({
-    id: { type: GraphQLString },
-    name: { type: GraphQLString },
-    customers: {
-      type: new GraphQLList(CustomerType),
-      resolve(parentValue, args) {
-        return axios
-          .get(`http://localhost:3000/cities/${parentValue.id}/customers`)
-          .then(response => response.data);
-      }
+export const CitySchema = new Schema({
+  name: { type: String },
+  customers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "customer"
     }
-  })
+  ]
 });
+
+CitySchema.statics.findCustomers = id => {
+  return this.findById(id)
+    .populate("customers")
+    .then(city => city.customers)
+    .catch(err => console.log(err));
+};
+
+CitySchema.statics.addCustomer = (id, customer) => {
+  const Customer = mongoose.model("customer");
+
+  return this.findById(id).then(city => {
+    const customer = new Customer({ customer, city });
+    city.customers.push(customer);
+    return Promise.all([customer.save(), city.save()]).then(
+      ([customer, city]) => city
+    );
+  });
+};
+
+mongoose.model("city", CitySchema);

@@ -6,7 +6,10 @@ import {
   GraphQLList,
   GraphQLNonNull
 } from "graphql";
-import CustomerType from "../models/customer";
+const mongoose = require("mongoose");
+const CustomerType = require("./types/customer");
+
+// const Customer = mongoose.model("customer");
 
 export const mutations = new GraphQLObjectType({
   name: "Mutation",
@@ -19,9 +22,10 @@ export const mutations = new GraphQLObjectType({
         city: { type: GraphQLString }
       },
       resolve(parentValue, { fullName, age }) {
-        return axios
-          .post("http://localhost:3000/customers", { fullName, age })
-          .then(response => response.data);
+        // return new Customer({ fullName, age }).save();
+        // return axios
+        //   .post("http://localhost:3000/customers", { fullName, age })
+        //   .then(response => response.data);
       }
     }
   }
